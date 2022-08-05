@@ -1,28 +1,51 @@
 package me.dio.soccernews.ui.news;
 
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import me.dio.soccernews.data.remote.SoccerNewsApi;
 import me.dio.soccernews.domain.News;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NewsViewModel extends ViewModel {
 
-    private final MutableLiveData<List<News>> news;
+    private final MutableLiveData<List<News>> news = new MutableLiveData<>();
+    private final SoccerNewsApi api;
 
     public NewsViewModel() {
-        this.news = new MutableLiveData<>();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://allanricksr.github.io/DIO_Soccer_News_API/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
+        api = retrofit.create(SoccerNewsApi.class);
+        this.findNews();
+    }
 
-        //TODO Remover mock de nooticias
-        List<News> news = new ArrayList<>();
-        news.add(new News("Derrota do Corintias","agafgewsdfwq"));
-        news.add(new News("Flamengo empata em casa","gfwdsfewgefwfq"));
-        news.add(new News("FLA FLU no domingo","efewfrhwgwrfqagqgegrh"));
+    public void findNews() {
+        api.getNews().enqueue(new Callback<List<News>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<News>> call, Response<List<News>> response) {
+                if (response.isSuccessful()) {
+                    news.setValue(response.body());
+                } else {
+                    //TODO Pensar em um estrategia de erros
+                }
+            }
 
-        this.news.setValue(news);
+            @Override
+            public void onFailure(Call<List<News>> call, Throwable t) {
+
+            }
+        });
     }
 
     public MutableLiveData<List<News>> getNews() {
