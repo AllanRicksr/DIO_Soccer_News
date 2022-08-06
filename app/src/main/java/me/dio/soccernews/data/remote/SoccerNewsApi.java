@@ -7,10 +7,9 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 
-public class SoccerNewsApi {
+public interface SoccerNewsApi {
 
     @GET("news.json")
-    public Call<List<News>> getNews() {
-        return null;
-    }
+    Call<List<News>> getNews();
+
 }
