@@ -1,4 +1,4 @@
-package me.dio.soccernews.ui.adapter;
+package me.dio.soccernews.ui.adapters;
 
 import android.content.Context;
 import android.content.Intent;
